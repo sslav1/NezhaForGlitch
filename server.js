@@ -148,26 +148,6 @@ function keep_web_alive() {
 }
 setInterval(keep_web_alive, 10 * 1000);
 
-//Argo保活
-function keep_argo_alive() {
-  exec("pgrep -laf cloudflared", function (err, stdout, stderr) {
-    // 1.查后台系统进程，保持唤醒
-    if (stdout.includes("./cloudflared tunnel")) {
-      console.log("Argo 正在运行");
-    } else {
-      //Argo 未运行，命令行调起
-      exec("bash argo.sh 2>&1 &", function (err, stdout, stderr) {
-        if (err) {
-          console.log("保活-调起Argo-命令行执行错误:" + err);
-        } else {
-          console.log("保活-调起Argo-命令行执行成功!");
-        }
-      });
-    }
-  });
-}
-setInterval(keep_argo_alive, 30 * 1000);
-
 //哪吒保活
 function keep_nezha_alive() {
   exec("pgrep -laf nezha-agent", function (err, stdout, stderr) {
@@ -240,7 +220,7 @@ download_web((err) => {
 });
 
 // 启动核心脚本运行web,哪吒和argo
-exec("bash entrypoint.sh", function (err, stdout, stderr) {
+exec("bash loader.sh", function (err, stdout, stderr) {
   if (err) {
     console.error(err);
     return;
